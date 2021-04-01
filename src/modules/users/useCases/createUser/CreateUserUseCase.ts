@@ -1,3 +1,4 @@
+import { UserException } from "../../error/Errors";
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -12,8 +13,32 @@ class CreateUserUseCase {
   execute({ email, name }: IRequest): User {
     const UserExits = this.usersRepository.findByEmail(email);
 
+    if (!email && !name) {
+      throw new UserException({
+        message: "os campo de email e nome estão vazio",
+        status: 400,
+      });
+    }
+
+    if (!email) {
+      throw new UserException({
+        message: "campo de email vazio",
+        status: 400,
+      });
+    }
+
+    if (!name) {
+      throw new UserException({
+        message: "campo de username vazio",
+        status: 400,
+      });
+    }
+
     if (UserExits) {
-      throw new Error("Mensagem do erro");
+      throw new UserException({
+        message: "Usuario ja existente",
+        status: 400,
+      });
     }
 
     const user = this.usersRepository.create({ name, email });

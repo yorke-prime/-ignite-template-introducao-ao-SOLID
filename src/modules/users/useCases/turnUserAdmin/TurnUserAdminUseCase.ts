@@ -1,3 +1,4 @@
+import { UserException } from "../../error/Errors";
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -12,7 +13,10 @@ class TurnUserAdminUseCase {
     const user = this.usersRepository.findById(user_id);
 
     if (!user) {
-      throw new Error("Usuario não existente");
+      throw new UserException({
+        message: "Usuario não existente",
+        status: 400,
+      });
     }
 
     const admim = this.usersRepository.turnAdmin(user);

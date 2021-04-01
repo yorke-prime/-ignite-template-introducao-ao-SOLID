@@ -1,3 +1,4 @@
+import { UserException } from "../../error/Errors";
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -12,11 +13,17 @@ class ListAllUsersUseCase {
     const user = this.usersRepository.findById(user_id);
 
     if (!user) {
-      throw new Error("Você não possui essa informação");
+      throw new UserException({
+        message: "Usuario não existe",
+        status: 404,
+      });
     }
 
     if (user.admin === false) {
-      throw new Error("Você não possui essa informação");
+      throw new UserException({
+        message: "Você não possui acesso essa informação",
+        status: 403,
+      });
     }
 
     const users = this.usersRepository.list();
